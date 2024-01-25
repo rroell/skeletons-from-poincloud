@@ -1,7 +1,7 @@
 import numpy as np 
 import os, sys
 import time
-import pptk
+# import pptk
 from math import ceil
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -10,6 +10,7 @@ from matplotlib.patches import Circle
 from matplotlib.ticker import LinearLocator, FixedLocator, FormatStrFormatter
 import matplotlib, time
 import mpl_toolkits.mplot3d.art3d as art3d
+import open3d as o3d
 
 matplotlib.interactive(True)
 
@@ -385,9 +386,33 @@ def make_plot(plot_points,colors = False, point_size = 0.0005):
     if isinstance(colors, bool) :
         colors = np.zeros(plot_points.shape)
         colors[:,0] = 1
-    v = pptk.viewer(plot_points)
-    v.attributes(colors)
-    v.set(point_size=point_size)
+    
+    # REPLACE PPTK by OPEN3D    
+    # v = pptk.viewer(plot_points) #TODO: replace pptk by another package (e.g. Open3D)
+    # v.attributes(colors)
+    # v.set(point_size=point_size)
+
+    print("Load visualization Roel")
+    point_cloud_open3d = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(plot_points))
+
+    point_cloud_open3d.colors = o3d.utility.Vector3dVector(colors)
+
+    visualizer = o3d.visualization.Visualizer()  # pylint: disable=no-member
+    visualizer.create_window()
+    visualizer.add_geometry(point_cloud_open3d)
+
+    # visualizer.get_render_option().background_color = (0, 0, 0)
+    visualizer.get_render_option().point_size = 5
+    visualizer.get_render_option().show_coordinate_frame = True
+    visualizer.get_view_control().set_front([0, 0, -1])
+    visualizer.get_view_control().set_up([0, -1, 0])
+
+    # visualizer.toggle_full_screen()
+    visualizer.run()
+    
+    visualizer.destroy_window()
+
+    ########
 
 
 def draw_vector_lines(vectors, start_point):

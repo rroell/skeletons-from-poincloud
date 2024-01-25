@@ -901,15 +901,21 @@ if __name__ == "__main__":
 
     import random 
 
-    nboxes = 5000 #Number of boxes in which to divide the bounding box of the given set of points
+    nboxes = 50 #Number of boxes in which to divide the bounding box of the given set of points
 
     #SAVE THE OUTPUT?
     SAVE_DICT = False
     folder = os.path.abspath("./Data")
     save_name = "myDict" #Automatically adds "_Nxxx_txx.pkl" N = number of points, t = threshold
 
-    points = np.load("Data/simple_tree.npy")
+    # OPTION 1: simple_tree example
+    # points = np.load("skeletons-from-poincloud/Data/simple_tree.npy") 
     
+    # # OPTION 2: my strap example
+    # pcd = o3d.io.read_point_cloud("strap.ply")    # Load PLY file
+    pcd = o3d.io.read_point_cloud(r"C:\Users\nlrdui\OneDrive - Vanderlande\Pictures\Backpack_for_Roel\strap1.ply")    # Load PLY file
+    points = np.asarray(pcd.points)    # Access the points
+
     make_plot(points)
 
     print("Getting ~", nboxes, "boxes for the", len(points), "points!")
@@ -920,7 +926,7 @@ if __name__ == "__main__":
 
     myDict = {}
 
-    #SHUFFLEs THE BOXES: This makes sure that random Vpairs are merge and it does not have a bias to start a 0,0 and work is way up from there 
+    #SHUFFLEs THE BOXES: This makes sure that random Vpairs are merge and it does not have a bias to start a 0,0 and work its way up from there 
     random.shuffle(boxes)
     for box in boxes:
         box_name = box[1]
